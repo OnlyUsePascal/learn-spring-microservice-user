@@ -1,0 +1,25 @@
+services:
+  service-user-pg:
+    image: 'postgres:17'
+    container_name: 'service-user-pg'
+    ports:
+      - "5483:5432"
+    environment:
+      POSTGRES_DB: 'ead_db'
+      POSTGRES_USER: 'ead_user'
+      POSTGRES_PASSWORD: 'ead_pwd'
+    networks:
+      - spring-net
+
+  service-user:
+    build: .
+    container_name: service-user
+    depends_on:
+      - service-user-pg
+    ports:
+      - "8083:8080"
+    environment:
+      POSTGRES_URI: 'jdbc:postgresql://service-user-pg:5432/ead_db?user=ead_user&password=ead_pwd'
+    networks:
+      - spring-net
+    
