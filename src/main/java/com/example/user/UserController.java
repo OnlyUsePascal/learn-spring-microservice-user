@@ -15,12 +15,12 @@ public class UserController {
   @Autowired
   private UserRepo userRepo;
 
-  @GetMapping("/user")
+  @GetMapping("/")
   public ResponseEntity<List<User>> listUsers() {
     return ResponseEntity.ok(userRepo.findAll());
   }
 
-  @GetMapping("/user/{username}")
+  @GetMapping("/{username}")
   public ResponseEntity<User> findUserWithUsername(@PathVariable String username) {
     var u = userRepo.findByUsername(username);
     if (u.isEmpty())
