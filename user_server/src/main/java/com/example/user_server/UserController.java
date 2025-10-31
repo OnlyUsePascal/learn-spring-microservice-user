@@ -15,9 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.user_client.CreateUserDto;
 import com.example.user_client.GetUserDto;
+import com.example.user_client.GetUserWithUsernameDto;
+import com.example.user_client.UserFeignClient;
 
 @RestController
-public class UserController {
+public class UserController implements UserFeignClient {
   @Autowired
   private UserRepo userRepo;
 
@@ -28,12 +30,13 @@ public class UserController {
   }
 
   @GetMapping("/{username}")
-  public ResponseEntity<User> findUserWithUsername(@PathVariable String username) {
-    var u = userRepo.findByUsername(username);
-    if (u.isEmpty())
+  public ResponseEntity<GetUserWithUsernameDto> findUserWithUsername(@PathVariable String username) {
+    var u_ = userRepo.findByUsername(username);
+    if (u_.isEmpty())
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with username:" + username);
 
-    return ResponseEntity.ok(u.get());
+    var u = u_.get();
+    return ResponseEntity.ok(new GetUserWithUsernameDto(u.getId(), u.getUsername(), u.getEmail(), u.getPassword()));
   }
 
   @PostMapping("/")
